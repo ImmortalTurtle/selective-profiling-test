@@ -1,22 +1,37 @@
 package org.jetbrains.test;
 
+import org.jetbrains.test.profiling.FullCallTree;
+
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Main {
 
     public static void main(String[] args) {
-        ExecutorService service = Executors.newFixedThreadPool(3);
-        for(int i = 0; i < 5; i++) {
+        final int THREAD_AMOUNT = 3;
+        final int TASKS_AMOUNT = 5;
+        ExecutorService service = Executors.newFixedThreadPool(THREAD_AMOUNT);
+        FullCallTree.getInstance();
+        for(int i = 0; i < TASKS_AMOUNT; i++) {
             int start = 100 * i;
             List<String> arguments = IntStream.range(start, start + 10)
                     .mapToObj(Integer :: toString)
                     .collect(Collectors.toList());
-            service.submit(() -> new DummyApplication(arguments).start());
+            service.submit(() -> {
+                FullCallTree.getInstance().registerThread();
+                new DummyApplication(arguments).start();
+            });
         }
         service.shutdown();
+        try {
+            service.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        FullCallTree.getInstance().print();
     }
 }
