@@ -35,8 +35,17 @@ public class FullCallRecords implements Serializable{
      */
     private transient ConcurrentHashMap<Thread, ThreadCallTree> threadMap = new ConcurrentHashMap<>(5);
 
+    /**
+     * Constructor.
+     * Sets {@link ThreadCallTree.Indexer#index} to 0.
+     */
     public FullCallRecords() {
         ThreadCallTree.Indexer.nullify();
+    }
+
+    public FullCallRecords(List<ThreadCallTree> callTreeList) {
+        this();
+        this.callTreeList = callTreeList;
     }
 
     /**
@@ -72,8 +81,9 @@ public class FullCallRecords implements Serializable{
     }
 
     /**
-     * Calculates maximum depth among it's {@link ThreadCallTree}s
-     * @return Maximum level among all ThreadCallTrees
+     * Calculates maximum depth among it's {@link ThreadCallTree}s,
+     * i.e. maximum of all {@link ThreadCallTree#getMaxLevel()}
+     * @return The biggest {@link ThreadCallTree#getMaxLevel()} among all ThreadCallTrees
      */
     public int calculateMaxLevel() {
         int maxLevel = 0;
@@ -85,7 +95,7 @@ public class FullCallRecords implements Serializable{
     }
 
     /**
-     * Prints ThreadCallTrees to console in a readable format.
+     * Prints {@link FullCallRecords#callTreeList} to console in a readable format.
      */
     public void print() {
         //Sorting ThreadCallTrees by order of creation.

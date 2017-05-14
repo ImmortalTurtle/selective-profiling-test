@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Egor Nemchinov
  */
 public class ThreadCallTree implements Serializable, Comparable<ThreadCallTree>{
-    private int index = Indexer.nextIndex();
+    private int index;
     transient private CallData deepestCall;
     private int maxLevel;
 
@@ -32,10 +32,20 @@ public class ThreadCallTree implements Serializable, Comparable<ThreadCallTree>{
 
     /**
      * Constructor.
-     * Initializes list with roots.
+     * Calls {@link ThreadCallTree#ThreadCallTree(int)} with
+     * {@link Indexer#nextIndex()}
      */
     public ThreadCallTree() {
-        roots = new ArrayList<>();
+        this(Indexer.nextIndex());
+    }
+
+    /**
+     * Initializes list with roots.
+     * @param index Index of ThreadCallTree.
+     */
+    ThreadCallTree(int index) {
+        this.index = index;
+        this.roots = new ArrayList<>();
     }
 
     /**
@@ -68,6 +78,7 @@ public class ThreadCallTree implements Serializable, Comparable<ThreadCallTree>{
     void print() {
         for(CallData root: roots) {
             root.print();
+            System.out.println();
         }
     }
 
@@ -90,10 +101,19 @@ public class ThreadCallTree implements Serializable, Comparable<ThreadCallTree>{
         return index;
     }
 
+    /**
+     * Returns list of {@link CallData} roots.
+     * @return {@link ThreadCallTree#roots}
+     */
     public List<CallData> getRoots() {
         return roots;
     }
 
+    /**
+     * Returns maximum depth among all
+     * the trees.
+     * @return Maximum level of {@link CallData}
+     */
     public int getMaxLevel() {
         return maxLevel;
     }

@@ -65,7 +65,7 @@ public class Printer {
 
     private static void repeatEmpty(Csv.Writer writer, int amount) {
         for(int i = 0; i < amount; i++) {
-            writer.value("");
+            writer.value(" ");
         }
     }
 }

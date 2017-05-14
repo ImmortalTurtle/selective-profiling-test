@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * What does it do?
+ * Iterator for {@link ThreadCallTree}.
+ * Goes through all the {@link CallData}
+ * in the tree in the order of their
+ * invocation time.
  *
  * @author Egor Nemchinov
  */
@@ -16,6 +19,12 @@ public class CallTreeIterator implements Iterator<CallData> {
     private int treeIndex = 0;
     private Map<CallData, Integer> indexMap;
 
+    /**
+     * Constructor.
+     * Creates iterator with starting point
+     * at the first root of given {@link ThreadCallTree}
+     * @param callTree {@link ThreadCallTree} to iterate in
+     */
     public CallTreeIterator(ThreadCallTree callTree) {
         this.roots = callTree.getRoots();
         indexMap = new HashMap<>();
@@ -23,11 +32,20 @@ public class CallTreeIterator implements Iterator<CallData> {
         this.next = this.current;
     }
 
+    /**
+     * Determines whether there is next {@link CallData} node or not.
+     * @return Boolean - Is there next {@link CallData}?
+     */
     @Override
     public boolean hasNext() {
         return next != null;
     }
 
+    /**
+     * Method finds next CallData, which means
+     * with the lowest time of invocation after current.
+     * @return Next {@link CallData}
+     */
     @Override
     public CallData next() {
         current = next;

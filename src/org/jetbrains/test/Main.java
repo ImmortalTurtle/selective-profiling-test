@@ -35,10 +35,11 @@ public class Main {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        FullCallRecords.getInstance().print();
+//        FullCallRecords.getInstance().print();
         //Either absolute or relative to project directory path can be passed into these methods
 //        Printer.printSerialized(FullCallRecords.getInstance(), "src/org/jetbrains/test/calls_serialized");
 //        Reader.readSerialized("src/org/jetbrains/test/calls_serialized").print();
         Printer.printCsv(FullCallRecords.getInstance(), "src/org/jetbrains/test/calls.csv", ',');
+        Reader.readCsv("src/org/jetbrains/test/calls.csv").print();
     }
 }
