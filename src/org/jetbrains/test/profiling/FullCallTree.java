@@ -1,6 +1,6 @@
 package org.jetbrains.test.profiling;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -15,26 +15,31 @@ public class FullCallTree implements Serializable{
         ThreadCallTree.Indexer.nullify();
     }
 
-    private ConcurrentHashMap<Thread, ThreadCallTree> threadMap = new ConcurrentHashMap<>(5);
+    private List<ThreadCallTree> callTreeList = Collections.synchronizedList(new ArrayList<ThreadCallTree>(5));
+
+    private transient ConcurrentHashMap<Thread, ThreadCallTree> threadMap = new ConcurrentHashMap<>(5);
 
     public ThreadCallTree currentCallTree() {
         ThreadCallTree callTree = threadMap.get(Thread.currentThread());
         if(callTree == null) {
             callTree = new ThreadCallTree();
-            threadMap.putIfAbsent(Thread.currentThread(), callTree);
+            threadMap.put(Thread.currentThread(), callTree);
         }
         return callTree;
     }
 
     public void registerThread() {
-        threadMap.putIfAbsent(Thread.currentThread(), new ThreadCallTree());
+        if(threadMap.get(Thread.currentThread()) == null) {
+            ThreadCallTree callTree =  new ThreadCallTree();
+            threadMap.put(Thread.currentThread(), callTree);
+            callTreeList.add(callTree);
+        }
     }
 
     public void print() {
         //sorting callTrees by order of running
-        List<ThreadCallTree> callTrees = new ArrayList<>(threadMap.values());
-        Collections.sort(callTrees);
-        for(ThreadCallTree tree: threadMap.values()) {
+        Collections.sort(callTreeList);
+        for(ThreadCallTree tree: callTreeList) {
             System.out.println("Thread-"+ tree.index+ "'s call tree:");
             tree.print();
             System.out.println();

@@ -1,7 +1,10 @@
 package org.jetbrains.test;
 
 import org.jetbrains.test.profiling.FullCallTree;
+import org.jetbrains.test.profiling.Printer;
+import org.jetbrains.test.profiling.Reader;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -11,7 +14,7 @@ import java.util.stream.IntStream;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
         final int THREAD_AMOUNT = 3;
         final int TASKS_AMOUNT = 5;
         ExecutorService service = Executors.newFixedThreadPool(THREAD_AMOUNT);
@@ -32,6 +35,8 @@ public class Main {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        FullCallTree.getInstance().print();
+//        FullCallTree.getInstance().print();
+        Printer.printSerialized(FullCallTree.getInstance(), "src/org/jetbrains/test/resourses/file");
+        Reader.readSerialized("src/org/jetbrains/test/resourses/file").print();
     }
 }

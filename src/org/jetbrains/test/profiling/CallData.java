@@ -1,5 +1,6 @@
 package org.jetbrains.test.profiling;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +8,7 @@ import java.util.List;
  * Created by Egor Nemchinov on 11.05.17.
  * SPbU, 2017
  */
-public class CallData {
+public class CallData implements Serializable{
     private String methodName;
     private String[] arguments;
     private int level = 0;
