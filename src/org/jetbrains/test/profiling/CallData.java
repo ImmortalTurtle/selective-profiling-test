@@ -66,11 +66,17 @@ public class CallData implements Serializable{
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(methodName).append("(");
+        stringBuilder.append(joinToString(arguments, ", ")).append(")");
+        return stringBuilder.toString();
+    }
+
+    public String toConsole() {
+        StringBuilder stringBuilder = new StringBuilder();
         for(int i = 0; i < level; i++) {
             stringBuilder.append("-");
         }
-        stringBuilder.append(methodName).append("(");
-        stringBuilder.append(joinToString(arguments, ", ")).append(")");
+        stringBuilder.append(toString());
         return stringBuilder.toString();
     }
 
@@ -92,10 +98,25 @@ public class CallData implements Serializable{
     }
 
     /**
+     * @return List of this CallData's children.
+     */
+    public List<CallData> getChildren() {
+        return children;
+    }
+
+    /**
+     * What?
+     * @return
+     */
+    public int getLevel() {
+        return level;
+    }
+
+    /**
      * Prints this CallData and recursively all of it's children.
      */
     void print() {
-        System.out.println(this.toString());
+        System.out.println(this.toConsole());
         for(CallData childCall: children) {
             childCall.print();
         }

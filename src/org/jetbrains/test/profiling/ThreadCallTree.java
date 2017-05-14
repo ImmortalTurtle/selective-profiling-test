@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ThreadCallTree implements Serializable, Comparable<ThreadCallTree>{
     private int index = Indexer.nextIndex();
     transient private CallData deepestCall;
+    private int maxLevel;
 
     /**
      * List of points of entrances.
@@ -56,6 +57,8 @@ public class ThreadCallTree implements Serializable, Comparable<ThreadCallTree>{
      * Must be called when exiting method.
      */
     public void exit() {
+        if(deepestCall.getLevel() > maxLevel)
+            maxLevel = deepestCall.getLevel();
         deepestCall = deepestCall.getParent();
     }
 
@@ -85,6 +88,14 @@ public class ThreadCallTree implements Serializable, Comparable<ThreadCallTree>{
      */
     public int getIndex() {
         return index;
+    }
+
+    public List<CallData> getRoots() {
+        return roots;
+    }
+
+    public int getMaxLevel() {
+        return maxLevel;
     }
 
     /**

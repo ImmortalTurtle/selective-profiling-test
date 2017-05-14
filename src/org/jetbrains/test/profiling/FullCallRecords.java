@@ -16,7 +16,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Egor Nemchinov
  */
 public class FullCallRecords implements Serializable{
-    //I do know singleton isn't the best possible option and I am going to change this.
+    //Singleton fits well because we should be able to profile easily
+    //without carrying around an instance of FullCallRecords
     private static FullCallRecords instance;
 
     /**
@@ -71,6 +72,19 @@ public class FullCallRecords implements Serializable{
     }
 
     /**
+     * Calculates maximum depth among it's {@link ThreadCallTree}s
+     * @return Maximum level among all ThreadCallTrees
+     */
+    public int calculateMaxLevel() {
+        int maxLevel = 0;
+        for(ThreadCallTree callTree: callTreeList) {
+            if(callTree.getMaxLevel() > maxLevel)
+                maxLevel = callTree.getMaxLevel();
+        }
+        return maxLevel;
+    }
+
+    /**
      * Prints ThreadCallTrees to console in a readable format.
      */
     public void print() {
@@ -81,6 +95,14 @@ public class FullCallRecords implements Serializable{
             tree.print();
             System.out.println();
         }
+    }
+
+    /**
+     * Gets {@link ThreadCallTree} list.
+     * @return {@link FullCallRecords#callTreeList}
+     */
+    public List<ThreadCallTree> getCallTreeList() {
+        return callTreeList;
     }
 
     /**
