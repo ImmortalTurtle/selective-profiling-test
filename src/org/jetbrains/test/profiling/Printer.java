@@ -3,24 +3,28 @@ package org.jetbrains.test.profiling;
 import java.io.*;
 
 /**
- * Created by Egor Nemchinov on 14.05.17.
- * SPbU, 2017
+ * * Purpose of this class is to open file
+ * and write {@link FullCallRecords} into it,
+ * which can be done by serializing it or
+ * by carefully printing in a human-readable form.
+ *
+ * @author Egor Nemchinov
  */
 public class Printer {
 
-    public static void printSerialized(FullCallTree callTree, String filePath) {
-        try {
-            FileOutputStream outputStream;
-            if(filePath.charAt(0) == '/')
-                outputStream = new FileOutputStream(new File(filePath));
-            else
-                outputStream = new FileOutputStream(new File(System.getProperty("user.dir") + "/" +filePath));
+    /**
+     * Method serializes and prints FullCallRecords into file.
+     * @param callTree FullCallRecords to save into file.
+     * @param filePath Relative to project dir(like "src/...")
+     *                or absolute path("/usr/...")
+     * @throws IOException WHen there are problems with output file.
+     */
+    public static void printSerialized(FullCallRecords callTree, String filePath) throws IOException {
+        try (FileOutputStream outputStream = new FileOutputStream(FileUtil.getFileByPath(filePath))){
             ObjectOutputStream stream = new ObjectOutputStream(outputStream);
             stream.writeObject(callTree);
             stream.flush();
             outputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

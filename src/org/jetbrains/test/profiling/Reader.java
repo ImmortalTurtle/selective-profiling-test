@@ -3,25 +3,29 @@ package org.jetbrains.test.profiling;
 import java.io.*;
 
 /**
- * Created by Egor Nemchinov on 14.05.17.
- * SPbU, 2017
+ * Purpose of this class is to read file
+ * and restore {@link FullCallRecords} from it,
+ * which can be done by deserializing or
+ * parsing data.
+ *
+ * @author Egor Nemchinov
  */
 public class Reader {
 
-    public static FullCallTree readSerialized(String filePath) {
-        FileInputStream inputStream;
-        FullCallTree fullCallTree = null;
-        try {
-            if(filePath.charAt(0) == '/')
-                inputStream = new FileInputStream(new File(filePath));
-            else
-                inputStream = new FileInputStream(new File(System.getProperty("user.dir") + "/" +filePath));
-            fullCallTree = (FullCallTree) new ObjectInputStream(inputStream).readObject();
+    /**
+     * Restores FullCallRecords from file.
+     * File must contain previously serialized tree.
+     * @param filePath Relative to project dir(like "src/...")
+     *                or absolute path("/usr/...")
+     * @return FullCallRecords, deserialized from file.
+     * @throws IOException When there are problems with input file.
+     * @throws ClassNotFoundException Some of deserialized classes aren't on the classpath.
+     */
+    public static FullCallRecords readSerialized(String filePath) throws IOException, ClassNotFoundException {
+        try(FileInputStream inputStream = new FileInputStream(FileUtil.getFileByPath(filePath))) {
+            FullCallRecords fullCallRecords = (FullCallRecords) new ObjectInputStream(inputStream).readObject();
             inputStream.close();
-            return fullCallTree;
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            return fullCallRecords;
         }
-        return fullCallTree;
     }
 }

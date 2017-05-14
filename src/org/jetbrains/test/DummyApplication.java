@@ -17,7 +17,7 @@ public class DummyApplication {
 
     public DummyApplication(List<String> args) {
         this.args = args;
-        threadCallTree = FullCallTree.getInstance().currentCallTree();
+        threadCallTree = FullCallRecords.getInstance().currentCallTree();
     }
 
     private boolean nextBoolean() {

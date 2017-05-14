@@ -1,6 +1,6 @@
 package org.jetbrains.test;
 
-import org.jetbrains.test.profiling.FullCallTree;
+import org.jetbrains.test.profiling.FullCallRecords;
 import org.jetbrains.test.profiling.Printer;
 import org.jetbrains.test.profiling.Reader;
 
@@ -18,14 +18,14 @@ public class Main {
         final int THREAD_AMOUNT = 3;
         final int TASKS_AMOUNT = 5;
         ExecutorService service = Executors.newFixedThreadPool(THREAD_AMOUNT);
-        FullCallTree.getInstance();
+        FullCallRecords.getInstance();
         for(int i = 0; i < TASKS_AMOUNT; i++) {
             int start = 100 * i;
             List<String> arguments = IntStream.range(start, start + 10)
                     .mapToObj(Integer :: toString)
                     .collect(Collectors.toList());
             service.submit(() -> {
-                FullCallTree.getInstance().registerThread();
+                FullCallRecords.getInstance().registerThread();
                 new DummyApplication(arguments).start();
             });
         }
@@ -35,8 +35,9 @@ public class Main {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-//        FullCallTree.getInstance().print();
-        Printer.printSerialized(FullCallTree.getInstance(), "src/org/jetbrains/test/resourses/file");
-        Reader.readSerialized("src/org/jetbrains/test/resourses/file").print();
+//        FullCallRecords.getInstance().print();
+        //Either absolute or relative to project directory path can be passed into these methods
+        Printer.printSerialized(FullCallRecords.getInstance(), "src/org/jetbrains/test/calls_serialized");
+        Reader.readSerialized("src/org/jetbrains/test/calls_serialized").print();
     }
 }
