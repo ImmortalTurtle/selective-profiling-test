@@ -53,19 +53,17 @@ public class Reader {
         List<String> currentString = reader.readLine();
         while(currentString != null && !currentString.isEmpty()) {
             if(level >= currentString.size()) {
-                for (int i = 0; i < level - 1; i++) {
-                    callTree.exit();
-                }
-                level = 0;
+                level = currentString.size() - 1;
             }
             String cell = currentString.get(level++);
             //Another root was met
             if(cell.length() < 2) {
-                for (int i = 0; i < level - 1; i++) {
+                for (int i = level - 1; i > 0 && currentString.get(i).length() < 2; i--) {
                     callTree.exit();
-                }
-                level = 0;
+                    level = i - 1;
+                }//fixme: sure it is so?
                 cell = currentString.get(level++);
+                System.out.println("!!!"+cell);
             }
             if(cell.contains("Thread-")) {
                 int index = Integer.parseInt(cell.substring(7, 8));

@@ -53,7 +53,7 @@ public class CallTreeIterator implements Iterator<CallData> {
         if(childrenIndex == null) {
             childrenIndex = 0;
         }
-        while(childrenIndex >= current.getChildren().size()) {
+        while(childrenIndex >= next.getChildren().size()) {
             next = next.getParent();
             if(next == null) {
                 treeIndex++;
@@ -66,8 +66,8 @@ public class CallTreeIterator implements Iterator<CallData> {
             }
             childrenIndex = indexMap.get(next);
         }
-        indexMap.put(current, childrenIndex + 1);
-        next = current.getChildren().get(childrenIndex);
+        indexMap.put(next, childrenIndex + 1);
+        next = next.getChildren().get(childrenIndex);
         return current;
     }
 }
